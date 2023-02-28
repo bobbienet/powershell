@@ -46,8 +46,15 @@
 [CmdletBinding()]
 Param([switch]$silent, [switch]$clipboard)
 
-$pubkey = "$env:userprofile\.ssh\id_rsa.pub"
-$modkey = "$env:userprofile\.ssh\cisco_id_rsa.txt"
+#Checks the OS of the system that it's running on, then uses the appropriate variable
+if ($IsLinux) {
+    $pubkey = "~/.ssh/id_rsa.pub"
+    $modkey = "~/.ssh/cisco_id_rsa.txt"
+}
+elseif ($IsWindows) {
+    $pubkey = "$env:userprofile\.ssh\id_rsa.pub"
+    $modkey = "$env:userprofile\.ssh\cisco_id_rsa.txt"
+}
 
 #test if the default public key is in the default location.
 if (test-path $pubkey){
