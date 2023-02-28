@@ -59,6 +59,7 @@ if (test-path $pubkey){
         write-host "File $pubkey not found"
         write-host "You can generate a public key file with"
         write-host "ssh-keygen -b 4096 ↵ ↵ ↵ ↵ (Press enter 4 times for passwordless ssh key)"
+        exit
     }
 
 #check that the first 8 characters of the file is "ssh-rsa " (including space)
@@ -118,4 +119,5 @@ write-host "File begins with " -NoNewline
 write-host "$begin" -ForegroundColor Red -NoNewline
 write-host "is not recognised as the beginning of an SSH key file that can be modified. Expected " -NoNewline
 write-host "ssh-rsa" -ForegroundColor Green
+exit
 }
