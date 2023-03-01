@@ -1,8 +1,8 @@
 <# Created by   ::  Adam Bobbie 
    Created on   ::  2022-11-18 (18th November 2022)
-   Modified by  ::  Adam Bobbie
-   Modified on  ::  2023-02-28 (28th February 2023)
-   Version      ::  1.1
+   Modified by  ::  Antonio Karlo Mijares
+   Modified on  ::  2023-03-01 (01 March 2023)
+   Version      ::  1.3
    Description  ::  Checks the default location of public keys for SSH in a windows environment (C:\Users\username\.ssh\id_rsa.pub)
                     and strips out everything but the key itself and then copies to clipboard (if -c flag is used) to allow for pasting
                     into a console session on Cisco equipment for ssh authentication. (unfortunately Cisco equipment doesn't like anything
@@ -46,14 +46,30 @@
 [CmdletBinding()]
 Param([switch]$silent, [switch]$clipboard)
 
-#Checks the OS of the system that it's running on, then uses the appropriate variable
-if ($IsLinux) {
-    $pubkey = "~/.ssh/id_rsa.pub"
-    $modkey = "~/.ssh/cisco_id_rsa.txt"
+#Check Powershell version and OS
+if ($PSVersionTable.PSVersion.Major -gt 6) {
+	if ($IsLinux) {
+		$pubkey = "~/.ssh/id_rsa.pub"
+		$modkey = "~/.ssh/cisco_id_rsa.txt"
+	}
+	elseif ($IsWindows) {
+		$pubkey = "$env:userprofile\.ssh\id_rsa.pub"
+		$modkey = "$env:userprofile\.ssh\cisco_id_rsa.txt"
+	}
 }
-elseif ($IsWindows) {
-    $pubkey = "$env:userprofile\.ssh\id_rsa.pub"
-    $modkey = "$env:userprofile\.ssh\cisco_id_rsa.txt"
+else {
+	$oscheck= Get-ChildItem -Path Env:OS | % { $_.Value }
+	if ($oscheck -contains "Windows") {
+		$pubkey = "$env:userprofile\.ssh\id_rsa.pub"
+		$modkey = "$env:userprofile\.ssh\cisco_id_rsa.txt"
+	}
+	#Not fully tested. This condition might not fully work.
+	#While I believe that the Linux distros would have version 6 and above installed,
+	#I still added this condition to check if the distro would have version 6 and below. 
+	elseif ($oscheck -contains "Linux") {
+		$pubkey = "~/.ssh/id_rsa.pub"
+		$modkey = "~/.ssh/cisco_id_rsa.txt"
+	}
 }
 
 #test if the default public key is in the default location.
