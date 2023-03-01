@@ -1,3 +1,7 @@
+a set of functions that allow for quickly retreiving useful information when working on Windows systems and working with serial ports.
+
+simply use the word 'wat' followed by one of the modules (wat com will show all active COM ports, wat ip will show active network connections)
+
 # File locations
 
 all of the psm1 modules under the modules directory get placed in C:\Users\$env:username\Documents\PowerShell\watframework
